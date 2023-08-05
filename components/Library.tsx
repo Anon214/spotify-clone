@@ -7,6 +7,8 @@ import { useUser } from "@supabase/auth-helpers-react";
 import useUploadModal from "@/hooks/useUploadModal";
 import { Song } from "@/types";
 import MediaItem from "./MediaItem";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 
 interface LibraryProps {
@@ -18,6 +20,12 @@ const Library: React.FC<LibraryProps> = ({
     const  authModal = useAuthModal();
     const uploadModal = useUploadModal();
     const user = useUser();
+    const router = useRouter();
+
+    const pushLiked = () => {
+        router.push('liked');
+    }
+
     const onClick = () => {
         if (!user) {
             return authModal.onOpen();
@@ -38,10 +46,22 @@ const Library: React.FC<LibraryProps> = ({
                 </div>
             </div>
 
+
             <div className="flex flex-col gap-y-2 mt-4 px-3">
+
+                <div onClick={pushLiked} className="flex items-center gap-x-3 cursor-pointer hover:bg-neutral-800/5 w-full p-2 rounded" >
+                    <div className="relative rounded-md min-h-[48px] min-w-[48px] overflow-hidden">
+                        <Image className="object-cover" src= '/images/liked.png' fill alt="Image" />
+                    </div>
+                    <div className="flex flex-col gap-y-1 overflow-hidden">
+                        <p className="text-white truncate">Liked Songs</p>
+                    </div>
+                </div>
+
                 {songs.map((item) => (
                     <MediaItem onClick={() => {}} data={item} key={item.id}/>
                 ))}
+                
             </div>
 
         </div>

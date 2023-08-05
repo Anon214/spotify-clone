@@ -26,6 +26,10 @@ const MediaItem: React.FC<MediaItemProps> = ({
             <div className="relative rounded-md min-h-[48px] min-w-[48px] overflow-hidden">
                 <Image className="object-cover" src={imageUrl || '/images/liked.png'} fill alt="Image" />
             </div>
+            <div className="flex flex-col gap-y-1 overflow-hidden">
+                <p className="text-white truncate">{data.title}</p>
+                <p className="text-neutral-400 text-sm truncate">{data.author}</p>
+            </div>
         </div>
      );
 }
