@@ -3,12 +3,13 @@
 import { TbPlaylist } from "react-icons/tb"
 import { AiOutlinePlus } from "react-icons/ai"
 import useAuthModal from "@/hooks/useAuthModal";
-import { useUser } from "@supabase/auth-helpers-react";
 import useUploadModal from "@/hooks/useUploadModal";
 import { Song } from "@/types";
 import MediaItem from "./MediaItem";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useOnPlay from "@/hooks/useOnPlay";
+import { useUser } from "@/hooks/useUser";
 
 
 interface LibraryProps {
@@ -19,10 +20,16 @@ const Library: React.FC<LibraryProps> = ({
 }) => {
     const  authModal = useAuthModal();
     const uploadModal = useUploadModal();
-    const user = useUser();
+    const { user } = useUser();
     const router = useRouter();
+    const onPlay = useOnPlay(songs);
 
     const pushLiked = () => {
+        if (!user) {
+            authModal.onOpen();
+            return;
+        }
+
         router.push('liked');
     }
 
@@ -39,7 +46,9 @@ const Library: React.FC<LibraryProps> = ({
             <div className="flex items-center justify-between px-5 pt-4">
                 <div className="inline-flex items-center gap-x-2">
                     <TbPlaylist className="text-neutral-400" size = {26}/>
-                    <p className="text-neutral-400 font-medium text-md">Your Library</p>
+                    <p className="text-neutral-400 font-medium text-md">
+                        Your Library
+                    </p>
                 </div>
                 <div onClick={onClick} className="cursor-pointer rounded-full flex items-center justify-center bg-neutral-900 p-1 hover:bg-neutral-800">
                     <AiOutlinePlus size={22} className="text-neutral-400 transition group-hover:text-white"/>
@@ -54,12 +63,14 @@ const Library: React.FC<LibraryProps> = ({
                         <Image className="object-cover" src= '/images/liked.png' fill alt="Image" />
                     </div>
                     <div className="flex flex-col gap-y-1 overflow-hidden">
-                        <p className="text-white truncate">Liked Songs</p>
+                        <p className="text-white truncate">
+                            Liked Songs
+                        </p>
                     </div>
                 </div>
 
                 {songs.map((item) => (
-                    <MediaItem onClick={() => {}} data={item} key={item.id}/>
+                    <MediaItem onClick={(id: string) => onPlay(id)} data={item} key={item.id}/>
                 ))}
                 
             </div>
